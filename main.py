@@ -341,7 +341,7 @@ class SO():
                     tercer = False
                     return tercer
 
-    def NO(self, primer, segundo):
+    def NO(self, primer, segundo,numeroPrograma):
         segundo = str(numeroPrograma) + segundo
         for i in self.variables:
             if i["nombre"] == segundo:
@@ -521,7 +521,7 @@ def ejecut():
         elif valor[0] == "0":
             chmaquina.O(valor[1], valor[2], valor[3].split("\n")[0], numeroPrograma[contEjecutar])
         elif valor[0] == "NO":
-            chmaquina.NO(valor[1], valor[2].split("\n")[0])
+            chmaquina.NO(valor[1], valor[2].split("\n")[0],numeroPrograma[contEjecutar])
         elif valor[0] == "muestre":
             pantalla = chmaquina.muestre(valor[1].split("\n")[0], numeroPrograma[contEjecutar])
             interface.screen.addItem(str(pantalla))
@@ -661,4 +661,6 @@ multihilado va existir un retraso a la hora de ejecucion,
 por lo que tienen que usar variables de control,
 mientras unos hilos estan bloqueados los otro puede que no,
 todos compraten recursos,y usted se encarga de mantener 
+
+pensar si crear una clase proceso o tener las propiedades temporales
 """
