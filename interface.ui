@@ -6,13 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>725</width>
+    <width>909</width>
     <height>522</height>
    </rect>
   </property>
-  <property name="maximumSize">
+  <property name="minimumSize">
    <size>
     <width>725</width>
+    <height>522</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>909</width>
     <height>522</height>
    </size>
   </property>
@@ -203,7 +209,7 @@
      <rect>
       <x>0</x>
       <y>30</y>
-      <width>721</width>
+      <width>911</width>
       <height>16</height>
      </rect>
     </property>
@@ -612,6 +618,58 @@ border:white;</string>
     </property>
     <property name="text">
      <string>INGRESE</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="fcfsBu">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>70</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>FCFS</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="sjfBu">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>120</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SJF</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="rrBu">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>170</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RR</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="prioridadBu">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>220</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PRIORIDAD</string>
     </property>
    </widget>
   </widget>
