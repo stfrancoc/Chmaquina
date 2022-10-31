@@ -73,30 +73,30 @@ class SO():
         variables = []
         etiquetas = []
 
-        nueva = 'nueva \w+ (C [\w+]?|I [\d+]?|R [\d+[.]\d+]?|L [0-1]?)'
+        nueva = 'nueva +\w+ +(C [\w+]?|I [\d+]?|R [\d+[.]\d+]?|L [0-1]?)'
         salto = '^\n'
-        cargue = 'cargue \w+'
-        almacene = 'almacene \w+'
-        lea = 'lea \w+ \w+'
-        sume = 'sume \w+'
-        reste = 'reste \w+'
-        multiplique = 'multiplique \w+'
-        divida = 'divida \w+'
+        cargue = 'cargue +\w+'
+        almacene = 'almacene +\w+'
+        lea = 'lea +\w+ +\w+'
+        sume = 'sume +\w+'
+        reste = 'reste +\w+'
+        multiplique = 'multiplique +\w+'
+        divida = 'divida +\w+'
         potencia = 'potencia [-]?\d+'
-        modulo = 'modulo \w+'
-        concatene = 'concatene \w+'
-        elimine = 'elimine \w+'
-        extraiga = 'extraiga \d+'
-        Y = 'Y \w+ \w+ \w+'
-        O = 'O \w+ \w+ \w+'
-        NO = 'NO \w+ \w+'
-        muestre = 'muestre \w+'
-        imprima = 'imprima \w+'
-        retorne = 'retorne [\d+]?'
-        vaya = 'vaya \w+'
-        vayasi = 'vayasi \w+ \w+'
-        etiqueta = 'etiqueta \w+ \d+'
-        comentario = '//[\w+ \w+]+'
+        modulo = 'modulo +\w+'
+        concatene = 'concatene +\w+'
+        elimine = 'elimine +\w+'
+        extraiga = 'extraiga +\d+'
+        Y = 'Y +\w+ +\w+ +\w+'
+        O = 'O +\w+ +\w+ +\w+'
+        NO = 'NO +\w+ +\w+'
+        muestre = 'muestre +\w+'
+        imprima = 'imprima +\w+'
+        retorne = 'retorne +[\d+]?'
+        vaya = 'vaya +\w+'
+        vayasi = 'vayasi +\w+ +\w+'
+        etiqueta = 'etiqueta +\w+ +\d+'
+        comentario = '//[ +\w+ +\w+]+'
 
         contValid = 0
         espacioRetorne = 0
@@ -461,8 +461,10 @@ def setMemoria():
     print(chmaquina.getMemoria())
     actMemoryInterface()
 
+def sjf():
+    pass
 
-#ejecutar toddo en la lista de programas primero en llegar primero en ejecutar
+#ejecutar todo en la lista de programas primero en llegar primero en ejecutar
 def fcfs():
     contEjecut = 0
     tamaño = len(finalProces)
