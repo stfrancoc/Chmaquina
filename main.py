@@ -224,7 +224,7 @@ class SO():
             fin = self.contMemori
             for i in etiquetas:
                 self.etiquetas.append(i)
-            varia = {"inicio": inicio, "fin": fin, "numProg": numProg}
+            varia = {"inicio": inicio, "fin": fin, "numProg": numProg,"cantLineas":(int(fin) - 1) - int(inicio) }
             self.espacioProgramas.append(varia)
             return True
         else:
@@ -396,6 +396,7 @@ chmaquina = SO()
 names = []
 proces = []
 finalProces = []
+priorida = []
 memoNum = 0
 kerNum = 0
 contEjecutar = 0
@@ -415,8 +416,6 @@ def loadfile():
     for i in names:
         for e in i:
             proces.append(e)
-    print(names)
-    print(proces)
 
 
 # restaura el sistema a condiciones iniciales
@@ -427,6 +426,7 @@ def resetall():
     interface.impres.clear()
     chmaquina.reiniciarSo()
     finalProces.clear()
+    priorida.clear()
     actMemoryInterface()
     clearVariables()
     actEtiquetas()
@@ -458,11 +458,325 @@ def setMemoria():
     resetall()
     chmaquina.cambiarMemoria(memoNum)
     chmaquina.cambiarKernel(kerNum)
-    print(chmaquina.getMemoria())
     actMemoryInterface()
 
-def sjf():
+def ingrese():
+    global priorida
+    dato = interface.entrada.text()
+    priorida.append((int(dato)))
+
+def roundRobin():
     pass
+
+#ejecuar por prioridad
+def prioridad():
+    #tengoq eu ordenar con el priorida que tengo arriba pero eso se ejecutara si tengo la cantidad de prioridades de los procesos
+    #en caso contrario actuara como fcfs
+    if len(priorida) != len(finalProces):
+        fcfs()
+    else:
+        gato = []
+        cont = 0
+        while cont < len(finalProces):
+            gato.append(finalProces[priorida[cont]])
+            cont+=1
+
+        contEjecut = 0
+        tamaño = len(finalProces)
+        while contEjecut < tamaño:
+            numeroPrograma = []
+            inicio = 0
+            fin = 0
+            cont = 0
+            for i in gato:
+                numeroPrograma.append(i.split("  ")[0])
+            memo = chmaquina.getMemoria()
+            for i in chmaquina.espacioProgramas:
+                if i["numProg"] == int(numeroPrograma[contEjecut]):
+                    inicio = i["inicio"]
+                    fin = int(i["fin"])
+            cont = int(inicio)
+            while cont <= fin:
+                valor = memo[cont].split(" ")
+                # interface.ejecutor.setText(memo[cont])
+                """if valor[0] == "nueva":
+                    print("sisas pa")"""
+                if valor[0] == "cargue":
+                    chmaquina.cargue(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "almacene":
+                    chmaquina.almacene(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "lea":
+                    interface.botEntrada.setStyleSheet("border:black;color:black;background:grey;")
+                    interface.entrada.setStyleSheet("border:black")
+
+                    dato = interface.entrada.text()
+                    chmaquina.lea(valor[1], int(dato))
+                    """
+                    interface.botEntrada.clicked(leaInterno)
+                    interface.botEntrada.setStyleSheet("border:white;color:white;background:white;")
+                    interface.entrada.setStyleSheet("border:white")"""
+                elif valor[0] == "sume":
+                    chmaquina.sume(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "reste":
+                    chmaquina.reste(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "multiplique":
+                    chmaquina.multiplique(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "divida":
+                    chmaquina.divida(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "potencia":
+                    chmaquina.potencia(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "modulo":
+                    chmaquina.modulo(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "concatene":
+                    chmaquina.concatene(valor[1].split("\n")[0])
+                elif valor[0] == "elimine":
+                    chmaquina.elimine(valor[1].split("\n")[0])
+                elif valor[0] == "extraiga":
+                    chmaquina.extraiga(valor[1].split("\n")[0])
+                elif valor[0] == "Y":
+                    chmaquina.Y(valor[1], valor[2], valor[3].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "0":
+                    chmaquina.O(valor[1], valor[2], valor[3].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "NO":
+                    chmaquina.NO(valor[1], valor[2].split("\n")[0], numeroPrograma[contEjecut])
+                elif valor[0] == "muestre":
+                    pantalla = chmaquina.muestre(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                    interface.screen.addItem(str(pantalla))
+                elif valor[0] == "imprima":
+                    impresora = chmaquina.imprima(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                    interface.impres.addItem(str(impresora))
+                elif valor[0] == "vaya":
+                    vaya = chmaquina.vaya(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                    cont = inicio + int(vaya)
+                    continue
+                elif valor[0] == "vayasi":
+                    vaya = chmaquina.vayasi(valor[1], valor[2].split("\n")[0])
+                    if vaya is False:
+                        cont += 1
+                        continue
+                    else:
+                        cont = inicio - 1 + int(chmaquina.vaya(vaya, numeroPrograma[contEjecut]))
+                        continue
+                elif valor[0] == "retorne":
+                    cont = fin
+                    break
+                cont += 1
+            contEjecut += 1
+            actMemoryInterface()
+            actVaribles()
+            actEtiquetas()
+    """
+    interface.botEntrada.setStyleSheet("border:black;color:black;background:grey;")
+                interface.entrada.setStyleSheet("border:black")
+                def leaInterno():
+                    dato = interface.entrada.text()
+                    chmaquina.lea(valor[1], int(dato))
+
+                interface.botEntrada.clicked(leaInterno)
+                interface.botEntrada.setStyleSheet("border:white;color:white;background:white;")
+                interface.entrada.setStyleSheet("border:white")
+    
+    
+    """
+
+
+#le da prioridad al programa mas corto, y el primero en llegar
+def sjf():
+    posicionEjecucion = []
+    espaciOcupado = chmaquina.espacioProgramas
+    lsita =[]
+    instEjecutor = []
+    for i in espaciOcupado:
+        datos = (i["cantLineas"],i["numProg"])
+        lsita.append(datos)
+    posicionEjecucion = sorted(lsita)
+    gato = []
+    cont = 0
+    while cont < len(finalProces):
+        gato.append(finalProces[posicionEjecucion[cont][1]])
+        # print(finalProces[orden[cont][1]])
+        cont += 1
+
+    contEjecut = 0
+    tamaño = len(finalProces)
+    while contEjecut < tamaño:
+        numeroPrograma = []
+        inicio = 0
+        fin = 0
+        cont = 0
+        for i in gato:
+            numeroPrograma.append(i.split("  ")[0])
+        memo = chmaquina.getMemoria()
+        for i in chmaquina.espacioProgramas:
+            if i["numProg"] == int(numeroPrograma[contEjecut]):
+                inicio = i["inicio"]
+                fin = int(i["fin"])
+        cont = int(inicio)
+        while cont <= fin:
+            valor = memo[cont].split(" ")
+            # interface.ejecutor.setText(memo[cont])
+            """if valor[0] == "nueva":
+                print("sisas pa")"""
+            if valor[0] == "cargue":
+                chmaquina.cargue(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "almacene":
+                chmaquina.almacene(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "lea":
+                interface.botEntrada.setStyleSheet("border:black;color:black;background:grey;")
+                interface.entrada.setStyleSheet("border:black")
+
+                dato = interface.entrada.text()
+                chmaquina.lea(valor[1], int(dato))
+                """
+                interface.botEntrada.clicked(leaInterno)
+                interface.botEntrada.setStyleSheet("border:white;color:white;background:white;")
+                interface.entrada.setStyleSheet("border:white")"""
+            elif valor[0] == "sume":
+                chmaquina.sume(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "reste":
+                chmaquina.reste(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "multiplique":
+                chmaquina.multiplique(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "divida":
+                chmaquina.divida(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "potencia":
+                chmaquina.potencia(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "modulo":
+                chmaquina.modulo(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "concatene":
+                chmaquina.concatene(valor[1].split("\n")[0])
+            elif valor[0] == "elimine":
+                chmaquina.elimine(valor[1].split("\n")[0])
+            elif valor[0] == "extraiga":
+                chmaquina.extraiga(valor[1].split("\n")[0])
+            elif valor[0] == "Y":
+                chmaquina.Y(valor[1], valor[2], valor[3].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "0":
+                chmaquina.O(valor[1], valor[2], valor[3].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "NO":
+                chmaquina.NO(valor[1], valor[2].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "muestre":
+                pantalla = chmaquina.muestre(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                interface.screen.addItem(str(pantalla))
+            elif valor[0] == "imprima":
+                impresora = chmaquina.imprima(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                interface.impres.addItem(str(impresora))
+            elif valor[0] == "vaya":
+                vaya = chmaquina.vaya(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                cont = inicio + int(vaya)
+                continue
+            elif valor[0] == "vayasi":
+                vaya = chmaquina.vayasi(valor[1], valor[2].split("\n")[0])
+                if vaya is False:
+                    cont += 1
+                    continue
+                else:
+                    cont = inicio - 1 + int(chmaquina.vaya(vaya, numeroPrograma[contEjecut]))
+                    continue
+            elif valor[0] == "retorne":
+                cont = fin
+                break
+            cont += 1
+        contEjecut += 1
+        actMemoryInterface()
+        actVaribles()
+        actEtiquetas()
+
+    #lo que se tiene que hacer es que con la posicionEjecucion en 0, manejar el orden de las ejecuciones que corresponde al
+    #contEjecut, y esto va en numeroPrograma
+    #el contejecut en vez de sumar lo va a igualar a la siguiente posicion del posicionEjecicion
+    #hay que adicionarle un contador -- o manejarlos con la cuenta de ejecucion
+    """
+    i = 0
+    contEjecu = 0
+    contEjecut = posicionEjecucion[i][0]
+    tamaño = len(finalProces)
+    while contEjecu < tamaño:
+        numeroPrograma = []
+        inicio = 0
+        fin = 0
+        cont = 0
+        for i in finalProces:
+            numeroPrograma.append(i.split("  ")[0])
+        memo = chmaquina.getMemoria()
+        for i in chmaquina.espacioProgramas:
+            if i["numProg"] == int(numeroPrograma[contEjecut]):
+                inicio = i["inicio"]
+                fin = int(i["fin"])
+        cont = int(inicio)
+        while cont <= fin:
+            valor = memo[cont].split(" ")
+            # interface.ejecutor.setText(memo[cont])
+            #if valor[0] == "nueva":
+            #    pass
+            if valor[0] == "cargue":
+                chmaquina.cargue(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "almacene":
+                chmaquina.almacene(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "lea":
+                interface.botEntrada.setStyleSheet("border:black;color:black;background:grey;")
+                interface.entrada.setStyleSheet("border:black")
+
+                dato = interface.entrada.text()
+                chmaquina.lea(valor[1], int(dato))
+                
+            #    interface.botEntrada.clicked(leaInterno)
+            #   interface.botEntrada.setStyleSheet("border:white;color:white;background:white;")
+            #   interface.entrada.setStyleSheet("border:white")
+                
+            elif valor[0] == "sume":
+                chmaquina.sume(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "reste":
+                chmaquina.reste(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "multiplique":
+                chmaquina.multiplique(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "divida":
+                chmaquina.divida(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "potencia":
+                chmaquina.potencia(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "modulo":
+                chmaquina.modulo(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "concatene":
+                chmaquina.concatene(valor[1].split("\n")[0])
+            elif valor[0] == "elimine":
+                chmaquina.elimine(valor[1].split("\n")[0])
+            elif valor[0] == "extraiga":
+                chmaquina.extraiga(valor[1].split("\n")[0])
+            elif valor[0] == "Y":
+                chmaquina.Y(valor[1], valor[2], valor[3].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "0":
+                chmaquina.O(valor[1], valor[2], valor[3].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "NO":
+                chmaquina.NO(valor[1], valor[2].split("\n")[0], numeroPrograma[contEjecut])
+            elif valor[0] == "muestre":
+                pantalla = chmaquina.muestre(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                interface.screen.addItem(str(pantalla))
+            elif valor[0] == "imprima":
+                impresora = chmaquina.imprima(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                interface.impres.addItem(str(impresora))
+            elif valor[0] == "vaya":
+                vaya = chmaquina.vaya(valor[1].split("\n")[0], numeroPrograma[contEjecut])
+                cont = inicio + int(vaya)
+                continue
+            elif valor[0] == "vayasi":
+                vaya = chmaquina.vayasi(valor[1], valor[2].split("\n")[0])
+                if vaya is False:
+                    cont += 1
+                    continue
+                else:
+                    cont = inicio - 1 + int(chmaquina.vaya(vaya, numeroPrograma[contEjecut]))
+                    continue
+            elif valor[0] == "retorne":
+                cont = fin
+                break
+            cont += 1
+        i += 1
+        actMemoryInterface()
+        actVaribles()
+        actEtiquetas()
+        """
+
+
 
 #ejecutar todo en la lista de programas primero en llegar primero en ejecutar
 def fcfs():
@@ -481,13 +795,12 @@ def fcfs():
                 inicio = i["inicio"]
                 fin = int(i["fin"])
         cont = int(inicio)
-        print("sisas")
         while cont <= fin:
             valor = memo[cont].split(" ")
             # interface.ejecutor.setText(memo[cont])
-            if valor[0] == "nueva":
-                print("sisas pa")
-            elif valor[0] == "cargue":
+            """if valor[0] == "nueva":
+                print("sisas pa")"""
+            if valor[0] == "cargue":
                 chmaquina.cargue(valor[1].split("\n")[0], numeroPrograma[contEjecut])
             elif valor[0] == "almacene":
                 chmaquina.almacene(valor[1].split("\n")[0], numeroPrograma[contEjecut])
@@ -495,13 +808,12 @@ def fcfs():
                 interface.botEntrada.setStyleSheet("border:black;color:black;background:grey;")
                 interface.entrada.setStyleSheet("border:black")
 
-                def leaInterno():
-                    dato = interface.entrada.text()
-                    chmaquina.lea(valor[1], int(dato))
-
+                dato = interface.entrada.text()
+                chmaquina.lea(valor[1], int(dato))
+                """
                 interface.botEntrada.clicked(leaInterno)
                 interface.botEntrada.setStyleSheet("border:white;color:white;background:white;")
-                interface.entrada.setStyleSheet("border:white")
+                interface.entrada.setStyleSheet("border:white")"""
             elif valor[0] == "sume":
                 chmaquina.sume(valor[1].split("\n")[0], numeroPrograma[contEjecut])
             elif valor[0] == "reste":
@@ -568,13 +880,12 @@ def ejecut():
             inicio = i["inicio"]
             fin = int(i["fin"])
     cont = int(inicio)
-    print("sisas")
     while cont <= fin:
         valor = memo[cont].split(" ")
         # interface.ejecutor.setText(memo[cont])
-        if valor[0] == "nueva":
-            print("sisas pa")
-        elif valor[0] == "cargue":
+        """if valor[0] == "nueva":
+            print("sisas pa")"""
+        if valor[0] == "cargue":
             chmaquina.cargue(valor[1].split("\n")[0], numeroPrograma[contEjecutar])
         elif valor[0] == "almacene":
             chmaquina.almacene(valor[1].split("\n")[0], numeroPrograma[contEjecutar])
@@ -582,13 +893,12 @@ def ejecut():
             interface.botEntrada.setStyleSheet("border:black;color:black;background:grey;")
             interface.entrada.setStyleSheet("border:black")
 
-            def leaInterno():
-                dato = interface.entrada.text()
-                chmaquina.lea(valor[1], int(dato))
-
+            dato = interface.entrada.text()
+            chmaquina.lea(valor[1], int(dato))
+            """
             interface.botEntrada.clicked(leaInterno)
             interface.botEntrada.setStyleSheet("border:white;color:white;background:white;")
-            interface.entrada.setStyleSheet("border:white")
+            interface.entrada.setStyleSheet("border:white")"""
         elif valor[0] == "sume":
             chmaquina.sume(valor[1].split("\n")[0], numeroPrograma[contEjecutar])
         elif valor[0] == "reste":
@@ -661,14 +971,14 @@ def verSyntax():
                 tomemoryVariables.append(check[1])
                 tomemoryEtiquetas.append(check[2])
                 finalProces.append(f"{i}  {proces[i]}")
-                print(f"proces {proces[i]} was {check[0]}")
+
             else:
                 interface.correctLed.setStyleSheet("background:none;border-radius:10px;")
                 interface.correctLabel.setStyleSheet("color:white")
                 interface.failLed.setStyleSheet("background:red;border-radius:10px;")
                 interface.failLabel.setStyleSheet("color:black")
                 tobash.append(proga)
-                print(f"proces {proces[i]} was {check[0]}")
+
 
     for i in range(len(tomemory)):
         chmaquina.llenarMemory(tomemory[i], tomemoryVariables[i], tomemoryEtiquetas[i])
@@ -683,9 +993,7 @@ def verSyntax():
 def actMemoryInterface():
     interface.listMemoria.clear()
     memoAux = chmaquina.getMemoria()
-    print(memoAux)
     indice = 0
-    print(len(memoAux))
     for i in memoAux:
         stri = str(indice) + "    " + str(i)
         interface.listMemoria.addItem(stri)
@@ -731,6 +1039,9 @@ interface.sliderKernel.sliderMoved.connect(actKernel)
 interface.setMemory.clicked.connect(setMemoria)
 interface.sintax.clicked.connect(verSyntax)
 interface.fcfsBu.clicked.connect(fcfs)
+interface.sjfBu.clicked.connect(sjf)
+interface.prioridadBu.clicked.connect(prioridad)
+interface.botEntrada.clicked.connect(ingrese)
 
 # ----------------------------------ejecutar--------------------------------------------------------
 interface.show()

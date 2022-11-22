@@ -612,9 +612,7 @@ border-radius:10px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color:white;
-background:white;
-border:white;</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>INGRESE</string>
