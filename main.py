@@ -424,6 +424,7 @@ def resetall():
     proces.clear()
     interface.screen.clear()
     interface.impres.clear()
+    interface.entrada.clear()
     chmaquina.reiniciarSo()
     finalProces.clear()
     priorida.clear()
@@ -464,9 +465,8 @@ def ingrese():
     global priorida
     dato = interface.entrada.text()
     priorida.append((int(dato)))
+    interface.entrada.clear()
 
-def roundRobin():
-    pass
 
 #ejecuar por prioridad
 def prioridad():
@@ -860,6 +860,14 @@ def actMemoryInterface():
         interface.listMemoria.addItem(stri)
         indice += 1
 
+def roundRobin():
+    if len(priorida) == 1:
+        lista = []
+        for i in finalProces:
+            lista.append(i)
+        fcfs()
+    else:
+        fcfs()
 
 # actualiza las etiquetas de la interface
 def actEtiquetas():
@@ -903,6 +911,7 @@ interface.fcfsBu.clicked.connect(fcfs)
 interface.sjfBu.clicked.connect(sjf)
 interface.prioridadBu.clicked.connect(prioridad)
 interface.botEntrada.clicked.connect(ingrese)
+interface.rrBu.clicked.connect(roundRobin)
 
 # ----------------------------------ejecutar--------------------------------------------------------
 interface.show()
